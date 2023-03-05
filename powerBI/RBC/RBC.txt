@@ -1,0 +1,37 @@
+
+blue        #005daa
+yellow         #ffd300
+
+DateMaster = CALENDAR(FIRSTDATE(Bank_Churn[Bank DOJ]),LASTDATE(Bank_Churn[Bank DOJ]))
+
+
+active customer = calculate(count(CustomerInfo[CustomerId]),ActiveCustomer[ActiveCategory] = "Active Member")
+
+Total Customer = count(Bank_Churn[CustomerId])
+
+Inactive customer = calculate(count(CustomerInfo[CustomerId]),ActiveCustomer[ActiveCategory] = "Inactive Member")
+
+
+
+
+credit card holder = calculate(count(CustomerInfo[CustomerId]),CreditCard[Category]="credit card holder")credit card holder = calculate(count(CustomerInfo[CustomerId]),CreditCard[Category]="credit card holder")
+Non credit card holder = calculate(count(CustomerInfo[CustomerId]),CreditCard[Category]="non credit card holder")
+Previous month exit customer = CALCULATE([Exit customer],PREVIOUSMONTH(DateMaster[Date]))
+Retain customr = CALCULATE([Total Customer],ExitCustomer[ExitCategory]="Retain")
+
+Churn % = 
+var EC = [Exit customer]
+var TC = [Total Customer]
+var churnper = DIVIDE(EC,TC)
+return churnper
+
+
+
+Exit customer = CALCULATE([Total Customer],ExitCustomer[ExitCategory]="Exit")
+
+
+Credit Type = SWITCH(TRUE(),Bank_Churn[CreditScore]>=800 && Bank_Churn[CreditScore]<=850,"Excellent",
+Bank_Churn[CreditScore]>=740 && Bank_Churn[CreditScore]<=790,"very good",
+Bank_Churn[CreditScore]>=670 && Bank_Churn[CreditScore]<=739,"good",
+Bank_Churn[CreditScore]>=580 && Bank_Churn[CreditScore]<=669,"fair",
+Bank_Churn[CreditScore]>=300 && Bank_Churn[CreditScore]<=579,"poor")
